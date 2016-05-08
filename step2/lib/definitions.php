@@ -17,9 +17,12 @@ function beautify($code) {
   require 'lib/format.php';
 
   $jsb = new JSBeautifier();
-  $opts = new BeautifierOptions();
 
+  $opts = new BeautifierOptions();
   $opts->indent_with_tabs = true;
+  $opts->eval_code = true;
+  $opts->jslint_happy = true;
+
   return $jsb->beautify($code, $opts);
 }
 
