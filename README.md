@@ -18,4 +18,7 @@ Notable Restrictions (if possible, these can be unrestricted)
 Steps
  * Step 1 (done)
   - Reduce HTML document to the smallest piece of code that will allow the application to continue working.
- * Step 2
+ * Step 2 (partially done)
+  - Separate JS file into definitions and executable code.
+ * Step 3
+  - Reduce executable code of JS file.
