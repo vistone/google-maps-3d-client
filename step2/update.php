@@ -4,6 +4,22 @@ ini_set('memory_limit', '256M'); //TODO: Analyze memory usage instead of increas
 
 define('AUTOMATIC_REPLACE_ENABLED', false);
 
+
+$regexCodeBlock = '\{[^{}]*\}';
+$regexCodeBlockLevel1 = "\{(?:[^{}]|(?:${regexCodeBlock}))*\}";
+$regexCodeBlockLevel2 = "\{(?:[^{}]|(?:${regexCodeBlockLevel1}))*\}";
+$regexCodeBlockLevel3 = "\{(?:[^{}]|(?:${regexCodeBlockLevel2}))*\}";
+$regexCodeBlockLevel4 = "\{(?:[^{}]|(?:${regexCodeBlockLevel3}))*\}";
+$regexCodeBlockLevel5 = "\{(?:[^{}]|(?:${regexCodeBlockLevel4}))*\}";
+$regexCodeBlockLevel6 = "\{(?:[^{}]|(?:${regexCodeBlockLevel5}))*\}";
+$regexCodeBlockLevel7 = "\{(?:[^{}]|(?:${regexCodeBlockLevel6}))*\}";
+$regexCodeBlockLevel8 = "\{(?:[^{}]|(?:${regexCodeBlockLevel7}))*\}";
+$regexCodeBlockLevel9 = "\{(?:[^{}]|(?:${regexCodeBlockLevel8}))*\}";
+$regexAnonymousFunction = "function\s*\([^()]*\)\s*${regexCodeBlockLevel9}";
+$regexVariable = '\$?[A-Za-z_0-9]+';
+$regexString = '(?:\"[^\"]*\"|\'[^\']*\')';
+
+
 $variable = [
   "HbC7FRYovGY",
   "ACT90oEkumd7ZZHZBfs7AsobzkUGs6LJNA"
@@ -85,6 +101,7 @@ $content = preg_replace($regex, '}', $content);
 
 // Regex replacments
 $replacements = [
+  ["var", "function () {};"],
   ["(background|display|border(-(top|left|right|bottom))?)(-[a-z]+)?{$c(R_CSS_COLON)}[^;\"\{\}]+;", ""],
   //['/\n\}\)\(this\._\);\n/', "\n"], // Removes last function definition
   ["((top|left|right|bottom|width|height|z-index|margin|padding):{$c(R_CSS_VALUE)};)", ""],
@@ -93,6 +110,10 @@ $replacements = [
   ["((text|vertical)-align){$c(R_CSS_COLON)}(center|left|right|top|bottom);?", ""],
   ["#[A-Fa-f0-9]{6}", ""],
 
+  ["\s*!1", " false"],
+  ["\s*!0", " true"],
+	//["\s+\(0,\s*([A-Za-z0-9_]+(\.[A-Za-z0-9_]+)*)\)\(", "\$2("], // TODO: not working
+
   ["\"{$c(R_CSS_MANY_SELECTORS)}\{\}", "\""],
   ["'{$c(R_CSS_MANY_SELECTORS)}\{\}", "'"],
   ["background(-image)?:url\(\"[^;\"\{\}]+\"\)[^;\"\{\}]*;", ""],
@@ -100,6 +121,8 @@ $replacements = [
   ["\"[-.,:+a-z\s()]+\{\}\"", "\"\""], // All empty CSS selectors
   ["'[-.,:+a-z\s()]+\{\}'", "''"], // All empty CSS selectors
 
+  ["_\.[A-z]+\(\"about:blank\"\);", ""],
+  ["_\.[A-z]+\(\"<!DOCTYPE html>\", 0\);", ""],
   ["_\.C\s*\([^()]*\);\n?", ""], // Removing all calls to _.C()
   ["_\.A\s*\(\"[^()\"]+\"\);\n?", ""], // Removing all calls to _.A(string)
   ["_\.z\s*\([^()]*\);\n?", ""], // Removing all calls to _.C()
@@ -109,9 +132,15 @@ $replacements = [
   ["\s*=\s*\"(\.|\/|#|@)[^\"]+\";", " = \"\";"], // Clearing all strings that begin with ./#@
   ["\s*=\s*'(\.|\/|#|@)[^']+';", " = '';"], // Clearing all strings that begin with ./#@
 
+	// Replacing _.Xb(something) with the actual function code
+  ["_\.Xb\((_\.[A-Za-z]+)\);", "\$1.Bb = function () {\n\tif (!\$1.HI) {\n\t\t\$1.HI = new \$1;\n\t}\n\treturn \$1.HI;\n};"],
+
+	// Emptying functions
+
+	["_\.z\s*=\s*{$regexAnonymousFunction};", "_.z = function() {\n\tvar b = _.rd.Bb();\n\toda(b.H[name], _.v(b.La));\n\t_.zc(b.T, name);\n\tif (0 == b.T.length) {\n\t\tWda(b);\n}"],
+
 ];
 $content = replaceManyByRegex($replacements, $content);
-
 
 // Automatic Constant Replacement (slowest so far)
 if (AUTOMATIC_REPLACE_ENABLED) {
@@ -134,6 +163,7 @@ if (AUTOMATIC_REPLACE_ENABLED) {
     $matches = [];
     $content = preg_replace($regex, $substitute, $content);
     if ($content === null) {
+			echo "Error!\n";
       print(get_last_preg_error());
       exit;
     }
@@ -147,20 +177,6 @@ $content = beautify($content);
 
 // Moving definitions away from function calls
 $definitionContent = '';
-
-$regexCodeBlock = '\{[^{}]*\}';
-$regexCodeBlockLevel1 = "\{(?:[^{}]|(?:${regexCodeBlock}))*\}";
-$regexCodeBlockLevel2 = "\{(?:[^{}]|(?:${regexCodeBlockLevel1}))*\}";
-$regexCodeBlockLevel3 = "\{(?:[^{}]|(?:${regexCodeBlockLevel2}))*\}";
-$regexCodeBlockLevel4 = "\{(?:[^{}]|(?:${regexCodeBlockLevel3}))*\}";
-$regexCodeBlockLevel5 = "\{(?:[^{}]|(?:${regexCodeBlockLevel4}))*\}";
-$regexCodeBlockLevel6 = "\{(?:[^{}]|(?:${regexCodeBlockLevel5}))*\}";
-$regexCodeBlockLevel7 = "\{(?:[^{}]|(?:${regexCodeBlockLevel6}))*\}";
-$regexCodeBlockLevel8 = "\{(?:[^{}]|(?:${regexCodeBlockLevel7}))*\}";
-$regexCodeBlockLevel9 = "\{(?:[^{}]|(?:${regexCodeBlockLevel8}))*\}";
-$regexVariable = '\$?[A-Za-z_0-9]+';
-$regexString = '(?:\"[^\"]*\"|\'[^\']*\')';
-$regexAnonymousFunction = "function\s*\([^()]*\)\s*${regexCodeBlockLevel9}";
 
 
 // Repeatedly remove functions at the end of a multi-variable declaration.
@@ -199,36 +215,37 @@ do {
 } while (isset($matches[0]) && count($matches[0]) > 0);
 
 
+
+function separateDefinitionFromContent($regex, $content, $onMatch) {
+	global $definitionContent;
+	$matches = [];
+  preg_match_all($regex, $content, $matches);
+  foreach ($matches[0] as $index => $match) {
+    $definition = $matches[1][$index];
+		$addition = $onMatch($definition);
+    $definitionContent .= $addition;
+  }
+  $content = preg_replace($regex, "\n", $content);
+}
+
 // New functions (that may begin with var)
 $regex = "/\\n(?:var\s+)?(${regexVariable}\s*=\s*${regexAnonymousFunction});/";
-preg_match_all($regex, $content, $matches);
-foreach ($matches[0] as $index => $match) {
-  $definition = $matches[1][$index];
-  $definitionContent .= "//New function.\nvar ${definition};\n\n";
-}
-$content = preg_replace($regex, "\n", $content);
-
+separateDefinitionFromContent($regex, $content, function($definition) {
+  return "//New function.\nvar ${definition};\n\n";
+});
 
 // New function in the underscore object
 $regex = "/\\n_\.(${regexVariable}\s*=\s*${regexAnonymousFunction});/";
-preg_match_all($regex, $content, $matches);
-foreach ($matches[0] as $index => $match) {
-  $definition = $matches[1][$index];
-  $definitionContent .= "//New function in underscore.\n_.${definition};\n\n";
-}
-$content = preg_replace($regex, "\n", $content);
-
+separateDefinitionFromContent($regex, $content, function($definition) {
+  return "//New function in underscore.\n_.${definition};\n\n";
+});
 
 // Empty variable declaration
 $definitionContent .= "//Empty variable declarations.\n";
 $regex = "/\\n(var\s+${regexVariable});/";
-preg_match_all($regex, $content, $matches);
-foreach ($matches[0] as $index => $match) {
-  $definition = $matches[1][$index];
-  $definitionContent .= "${definition};\n";
-}
-$content = preg_replace($regex, "", $content);
-
+separateDefinitionFromContent($regex, $content, function($definition) {
+  return "${definition};\n";
+});
 
 // Empty variable declaration
 $definitionContent .= "//Empty variable declarations.\n";
@@ -346,6 +363,7 @@ _.z("sy426");
 _.z(_.Ya);
 ';
 
+echo 'Finished processing.';
 
 file_put_contents('res/temp-script-processed-definitions.js', $definitionContent);
 file_put_contents('res/temp-script-processed-content.js', $content);

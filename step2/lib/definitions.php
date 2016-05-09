@@ -47,6 +47,7 @@ function replaceManyByRegex($replacements, $content) {
 
     $content = preg_replace('/' . $regex . '/', $substitute, $content);
     if ($content === null) {
+			echo "Error!\n";
       print(get_last_preg_error());
       exit;
     }
