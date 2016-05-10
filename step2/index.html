@@ -1,6 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script type="text/javascript">
+var lat = -76.7128387, lon = 39.8836807;
+window.APP_INITIALIZATION_STATE=[[[208.0,lat,lon]],[[["m"]]],,,,[,,[3,[,lat,lon,,208.0,,20.0,46.18,55.71]]],,,[59,60,61,63,66,65]];
+
+this._ = this._ || {};
+var window = this;
+
+window.history.pushState = function() {};
+window.history.replaceState = function() {};
+
+_.z = function(name) {
+	if (!_.rd.HI) {
+		_.rd.HI = new _.rd;
+	}
+	var b = _.rd.HI;
+
+	var tempA = b.H[name];
+	var tempB = _.v(b.La);
+	var c = new tempA.R;
+	c.initialize(tempB());
+	tempA.S = c;
+
+	var c = Array.prototype.indexOf.call(b.T, name);
+	if (c >= 0) {
+		Array.prototype.splice.call(b.T, c, 1)
+	}
+
+	if (0 == b.T.length) {
+
+		while (b.R.length > 0) {
+			var m = _.tc(b.R.shift(), function (b) {
+				return !this.H[b].Ae()
+			}, b);
+			if (0 < m.length) {
+				b.Ja(m);
+				break;
+			}
+		}
+
+	}
+};
+
+</script>
 <script type="text/javascript" src="res/temp-script-processed-definitions.js"></script>
 <link href="res/styles.css" type="text/css" rel="stylesheet">
 </head>

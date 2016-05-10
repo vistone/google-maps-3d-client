@@ -16,7 +16,7 @@ $regexCodeBlockLevel7 = "\{(?:[^{}]|(?:${regexCodeBlockLevel6}))*\}";
 $regexCodeBlockLevel8 = "\{(?:[^{}]|(?:${regexCodeBlockLevel7}))*\}";
 $regexCodeBlockLevel9 = "\{(?:[^{}]|(?:${regexCodeBlockLevel8}))*\}";
 $regexAnonymousFunction = "function\s*\([^()]*\)\s*${regexCodeBlockLevel9}";
-$regexVariable = '\$?[A-Za-z_0-9]+';
+$regexVariable = '[\$A-Za-z_0-9]+';
 $regexString = '(?:\"[^\"]*\"|\'[^\']*\')';
 
 
@@ -99,9 +99,8 @@ $regex = '/(min|max)?(' . implode('|', $properties) . "){$c(R_CSS_COLON)}[^;\"\{
 $content = preg_replace($regex, '}', $content);
 
 
-// Regex replacments
+// Regex replacments (before beautify)
 $replacements = [
-  ["var", "function () {};"],
   ["(background|display|border(-(top|left|right|bottom))?)(-[a-z]+)?{$c(R_CSS_COLON)}[^;\"\{\}]+;", ""],
   //['/\n\}\)\(this\._\);\n/', "\n"], // Removes last function definition
   ["((top|left|right|bottom|width|height|z-index|margin|padding):{$c(R_CSS_VALUE)};)", ""],
@@ -132,12 +131,8 @@ $replacements = [
   ["\s*=\s*\"(\.|\/|#|@)[^\"]+\";", " = \"\";"], // Clearing all strings that begin with ./#@
   ["\s*=\s*'(\.|\/|#|@)[^']+';", " = '';"], // Clearing all strings that begin with ./#@
 
-	// Replacing _.Xb(something) with the actual function code
+  // Replacing _.Xb(something) with the actual function code
   ["_\.Xb\((_\.[A-Za-z]+)\);", "\$1.Bb = function () {\n\tif (!\$1.HI) {\n\t\t\$1.HI = new \$1;\n\t}\n\treturn \$1.HI;\n};"],
-
-	// Emptying functions
-
-	["_\.z\s*=\s*{$regexAnonymousFunction};", "_.z = function() {\n\tvar b = _.rd.Bb();\n\toda(b.H[name], _.v(b.La));\n\t_.zc(b.T, name);\n\tif (0 == b.T.length) {\n\t\tWda(b);\n}"],
 
 ];
 $content = replaceManyByRegex($replacements, $content);
@@ -218,6 +213,7 @@ do {
 
 function separateDefinitionFromContent($regex, $content, $onMatch) {
 	global $definitionContent;
+	global $content;
 	$matches = [];
   preg_match_all($regex, $content, $matches);
   foreach ($matches[0] as $index => $match) {
@@ -226,6 +222,12 @@ function separateDefinitionFromContent($regex, $content, $onMatch) {
     $definitionContent .= $addition;
   }
   $content = preg_replace($regex, "\n", $content);
+  if ($content === null) {
+    print("Error! Invalid regex!");
+    print(get_last_preg_error());
+    throw new Exception("Error!");
+    exit;
+  }
 }
 
 // New functions (that may begin with var)
@@ -247,17 +249,6 @@ separateDefinitionFromContent($regex, $content, function($definition) {
   return "${definition};\n";
 });
 
-// Empty variable declaration
-$definitionContent .= "//Empty variable declarations.\n";
-$regex = "/\\n(var\s+${regexVariable}(,\s+${regexVariable})+);/";
-preg_match_all($regex, $content, $matches);
-foreach ($matches[0] as $index => $match) {
-  $definition = $matches[1][$index];
-  $definitionContent .= "${definition};\n";
-}
-$definitionContent .= "\n\n";
-$content = preg_replace($regex, "", $content);
-
 
 // Repeatedly remove strings at the beginning of a multi-variable declaration.
 $regex = "/\\n(?:var\s+)(${regexVariable}\s*=\s*${regexString}),(\\n|\\t)*/";
@@ -271,17 +262,43 @@ do {
 } while (isset($matches[0]) && count($matches[0]) > 0);
 
 
+
+$functionsToRemove = [
+  "_\.z",
+  "_\.(Rda|Jd)",
+  "Iba[A-Za-z\.]*",
+
+  "[CH-Ji-joq]zc",
+  "nM",
+
+  "[JMRUn]ba",
+
+  "[KJP]da",
+
+  "kea",
+  "wpa",
+  "hnb",
+  "Fva",
+];
+// Regex replacments (after beautify)
+$replacements = [
+  // Emptying functions
+  ["var\s+(" . implode("|", $functionsToRemove) . ")\s*=\s*{$regexAnonymousFunction};", "if (!\$1) var \$1 = function () {};"],
+  ["\\n(" . implode("|", $functionsToRemove) . ")\s*=\s*{$regexAnonymousFunction};", "\nif (!\$1) \$1 = function () {};"],
+];
+$definitionContent = replaceManyByRegex($replacements, $definitionContent);
+$content = replaceManyByRegex($replacements, $content);
+
+
+
+
 // Strings ""
 $definitionContent .= "//Strings\n";
 $regex = "/\\n((?:var\s+|_\.)?${regexVariable}\s*=\s*${regexString});/";
-preg_match_all($regex, $content, $matches);
-foreach ($matches[0] as $index => $match) {
-  $definition = $matches[1][$index];
-  $definitionContent .= "${definition};\n";
-}
+separateDefinitionFromContent($regex, $content, function($definition) {
+  return "${definition};\n";
+});
 $definitionContent .= "\n\n";
-$content = preg_replace($regex, "", $content);
-
 
 
 $regex = "/\\n{4,}/";
@@ -289,19 +306,13 @@ $content = preg_replace($regex, "\n", $content);
 
 
 // Extra code for "definition content"
-$definitionContent = 'var lat = -76.7128387, lon = 39.8836807;
-
+$definitionContent = '
 var map_url = ["/maps/_/js/","m","maps.m.en.'
 . $variable[0]
 . '.O","'
 . $variable[1]
 . '"]; // Unsure of its real purpose
 window.APP_OPTIONS=[,,,[,,,,,,[[""],,[""],,,,,"/maps/vt"],,,,,,,"//kh.google.com/rt/earth"],,,,,,,,,,,,,,,,,,,,,,[1,],,,,,,,,,,,,,,map_url,,,,,,,,,,,,,,,,,,,1];
-window.APP_INITIALIZATION_STATE=[[[208.0,lat,lon]],[[["m"]]],,,,[,,[3,[,lat,lon,,208.0,,20.0,46.18,55.71]]],,,[59,60,61,63,66,65]];
-
-
-this._ = this._ || {};
-var window = this;
 ' . $definitionContent;
 
 
@@ -363,7 +374,7 @@ _.z("sy426");
 _.z(_.Ya);
 ';
 
-echo 'Finished processing.';
+echo "Finished processing.\n";
 
 file_put_contents('res/temp-script-processed-definitions.js', $definitionContent);
 file_put_contents('res/temp-script-processed-content.js', $content);
