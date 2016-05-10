@@ -111,7 +111,7 @@ $replacements = [
 
   ["\s*!1", " false"],
   ["\s*!0", " true"],
-	//["\s+\(0,\s*([A-Za-z0-9_]+(\.[A-Za-z0-9_]+)*)\)\(", "\$2("], // TODO: not working
+	//["\"[a-z]+[A-Z][a-z]+\"", "\"\""],
 
   ["\"{$c(R_CSS_MANY_SELECTORS)}\{\}", "\""],
   ["'{$c(R_CSS_MANY_SELECTORS)}\{\}", "'"],
@@ -273,9 +273,14 @@ $functionsToRemove = [
 
   "[JMRUn]ba",
 
-  "[KJP]da",
+  "[KJPQTX]da",
 
-  "kea",
+	"[moq]Ea",
+	"[abe-il-puw-zA-COP]Xa",
+
+  "[fgjkMO]ea",
+	"[yABF]ka",
+	"[nCK]la",
   "wpa",
   "hnb",
   "Fva",
@@ -285,6 +290,8 @@ $replacements = [
   // Emptying functions
   ["var\s+(" . implode("|", $functionsToRemove) . ")\s*=\s*{$regexAnonymousFunction};", "if (!\$1) var \$1 = function () {};"],
   ["\\n(" . implode("|", $functionsToRemove) . ")\s*=\s*{$regexAnonymousFunction};", "\nif (!\$1) \$1 = function () {};"],
+
+	//["\s+\(0,\s*([A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)*)\)\(", " \$2("], // TODO: not working
 ];
 $definitionContent = replaceManyByRegex($replacements, $definitionContent);
 $content = replaceManyByRegex($replacements, $content);
@@ -317,62 +324,7 @@ window.APP_OPTIONS=[,,,[,,,,,,[[""],,[""],,,,,"/maps/vt"],,,,,,,"//kh.google.com
 
 
 // Extra code for "content"
-$content .= '
-for (var i = 0; i <= 15; i++) { _.z("sy" + i); }
-for (var i = 17; i <= 20; i++) { _.z("sy" + i); }
-for (var i = 25; i <= 67; i++) { _.z("sy" + i); }
-for (var i = 69; i <= 71; i++) { _.z("sy" + i); }
-for (var i = 74; i <= 75; i++) { _.z("sy" + i); }
-for (var i = 78; i <= 79; i++) { _.z("sy" + i); }
-_.z("sy83");
-for (var i = 85; i <= 89; i++) { _.z("sy" + i); }
-for (var i = 93; i <= 96; i++) { _.z("sy" + i); }
-for (var i = 101; i <= 104; i++) { _.z("sy" + i); }
-_.z("sy110");
-_.z("sy113");
-for (var i = 115; i <= 117; i++) { _.z("sy" + i); }
-_.z("sy120");
-for (var i = 127; i <= 131; i++) { _.z("sy" + i); }
-_.z("sy141");
-_.z("sy147");
-_.z("sy148");
-_.z("sy156");
-for (var i = 164; i <= 170; i++) { _.z("sy" + i); }
-for (var i = 172; i <= 188; i++) { _.z("sy" + i); }
-_.z("sy190");
-_.z("sy192");
-_.z("sy196");
-_.z("sy197");
-_.z("sy200");
-_.z("sy202");
-_.z("sy205");
-_.z("sy207");
-for (var i = 210; i <= 213; i++) { _.z("sy" + i); }
-_.z("sy215");
-for (var i = 220; i <= 224; i++) { _.z("sy" + i); }
-for (var i = 229; i <= 232; i++) { _.z("sy" + i); }
-_.z("sy239");
-_.z("sy244");
-_.z("sy255");
-for (var i = 257; i <= 262; i++) { _.z("sy" + i); }
-for (var i = 274; i <= 276; i++) { _.z("sy" + i); }
-_.z("sy279");
-_.z("sy280");
-_.z("sy342");
-_.z("sy358");
-_.z("sy359");
-_.z("sy362");
-_.z("sy374");
-_.z("sy379");
-_.z("sy389");
-_.z("sy391");
-_.z("sy393");
-_.z("sy394");
-for (var i = 396; i <= 400; i++) { _.z("sy" + i); }
-for (var i = 402; i <= 424; i++) { _.z("sy" + i); }
-_.z("sy426");
-_.z(_.Ya);
-';
+$content .= '';
 
 echo "Finished processing.\n";
 
