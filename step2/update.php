@@ -274,15 +274,20 @@ $functionsToRemove = [
   "[glrv]xc",
   "[cegptT]zc",
 
-  ".Wa",
-  "[a-gijlx-zB]1a",
+  ".[LW]a",
+  "[a-gijlx-z]1a",
+
+  "qM\.prototype\.(ka)",
+  "(.f)\.prototype\.[\$a-zA-z]+",
+  "(?:_\.)?([m]c|[\$flnpwxLV-Z]e|[deghjm-su-wyzA]f|.s|[f-hklA]t|[Q-V]G|nM|gea|[sGJN]da|[foCH]zc|Wyc|.[bf-hMR]a|[o-u]Hb)\.prototype\.([\$a-zA-z]+)",
+	"_\.Sda",
 
 ];
 // Regex replacments (after beautify)
 $replacements = [
   // Emptying functions
   ["var\s+(" . implode("|", $functionsToRemove) . ")\s*=\s*{$regexAnonymousFunction};", "if (!\$1) var \$1 = function () {};"],
-  ["\\n(" . implode("|", $functionsToRemove) . ")\s*=\s*{$regexAnonymousFunction};", "\nif (!\$1) \$1 = function () {};"],
+  ["\\n(" . implode("|", $functionsToRemove) . ")\s*=\s*{$regexAnonymousFunction};", ""],
 
 	//["\s+\(0,\s*([A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)*)\)\(", " \$2("], // TODO: not working
 ];
