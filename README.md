@@ -1,4 +1,6 @@
 # google-maps-3d-client
+
+[![Join the chat at https://gitter.im/wafflestealer654/google-maps-3d-client](https://badges.gitter.im/wafflestealer654/google-maps-3d-client.svg)](https://gitter.im/wafflestealer654/google-maps-3d-client?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 The smallest possible Google Maps 3d Client
 
 Google created a 3d model of many major cities. Unforutantely, they have obfsucated the JavaScript code responsible for fetching and rendering those 3d models. This repository will contain the scripts needed to create the smallest possible web application with the following goals.
