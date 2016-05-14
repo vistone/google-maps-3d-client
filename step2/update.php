@@ -6,18 +6,21 @@ define('AUTOMATIC_REPLACE_ENABLED', true);
 
 
 $regexCodeBlock = '\{[^{}]*\}';
-$regexCodeBlockLevel1 = "\{(?:[^{}]|(?:${regexCodeBlock}))*\}";
-$regexCodeBlockLevel2 = "\{(?:[^{}]|(?:${regexCodeBlockLevel1}))*\}";
-$regexCodeBlockLevel3 = "\{(?:[^{}]|(?:${regexCodeBlockLevel2}))*\}";
-$regexCodeBlockLevel4 = "\{(?:[^{}]|(?:${regexCodeBlockLevel3}))*\}";
-$regexCodeBlockLevel5 = "\{(?:[^{}]|(?:${regexCodeBlockLevel4}))*\}";
-$regexCodeBlockLevel6 = "\{(?:[^{}]|(?:${regexCodeBlockLevel5}))*\}";
-$regexCodeBlockLevel7 = "\{(?:[^{}]|(?:${regexCodeBlockLevel6}))*\}";
-$regexCodeBlockLevel8 = "\{(?:[^{}]|(?:${regexCodeBlockLevel7}))*\}";
-$regexCodeBlockLevel9 = "\{(?:[^{}]|(?:${regexCodeBlockLevel8}))*\}";
-$regexAnonymousFunction = "function\s*\([^()]*\)\s*${regexCodeBlockLevel9}";
+$regexCodeBlockLevel1 = "\{(?:[^{}]|(?:{$regexCodeBlock}))*\}";
+$regexCodeBlockLevel2 = "\{(?:[^{}]|(?:{$regexCodeBlockLevel1}))*\}";
+$regexCodeBlockLevel3 = "\{(?:[^{}]|(?:{$regexCodeBlockLevel2}))*\}";
+$regexCodeBlockLevel4 = "\{(?:[^{}]|(?:{$regexCodeBlockLevel3}))*\}";
+$regexCodeBlockLevel5 = "\{(?:[^{}]|(?:{$regexCodeBlockLevel4}))*\}";
+$regexCodeBlockLevel6 = "\{(?:[^{}]|(?:{$regexCodeBlockLevel5}))*\}";
+$regexCodeBlockLevel7 = "\{(?:[^{}]|(?:{$regexCodeBlockLevel6}))*\}";
+$regexCodeBlockLevel8 = "\{(?:[^{}]|(?:{$regexCodeBlockLevel7}))*\}";
+$regexCodeBlockLevel9 = "\{(?:[^{}]|(?:{$regexCodeBlockLevel8}))*\}";
+$regexCodeBlock = "\s*{$regexCodeBlockLevel9}\s*";
+$regexAnonymousFunction = "function\s*\([^()]*\){$regexCodeBlock}";
 $regexVariable = '[\$A-Za-z_0-9]+';
 $regexString = '(?:\"[^\"]*\"|\'[^\']*\')';
+$regexNumber = '(?:-?[0-9]+(?:\.[0-9]+)?(?:E-?[0-9]+(?:\.[0-9]+)?)?)';
+$regexRegex = '\/.+\/[ig]*'; // WARNING: Creates a huge amount of false positives! Don't rely on this by itself.
 
 
 $variable = [
@@ -146,23 +149,9 @@ $content = beautify($content);
 $definitionContent = '';
 
 
-// Repeatedly remove functions at the end of a multi-variable declaration.
-$definitionContent .= "//New function (found at end of multi-variable declaration).\n";
-$regex = "/\s*,\s*\\n\\t(${regexVariable}\s*=\s*${regexAnonymousFunction});/";
-do {
-  preg_match_all($regex, $content, $matches);
-  foreach ($matches[0] as $index => $match) {
-    $definition = $matches[1][$index];
-    $definitionContent .= "var ${definition};\n";
-  }
-  $content = preg_replace($regex, ";", $content);
-} while (isset($matches[0]) && count($matches[0]) > 0);
-$definitionContent .= "\n\n";
-
-
-// Repeatedly remove functions at the beginning of a multi-variable declaration.
-$definitionContent .= "//New function (found at start of multi-variable declaration).\n";
-$regex = "/\\n(?:var\s+)(${regexVariable}\s*=\s*${regexAnonymousFunction}),(\\n|\\t)*/";
+// Repeatedly remove empty variables (at the beginning)
+$definitionContent .= "//Empty variables.\n";
+$regex = "/\\n(?:var\s+)({$regexVariable}),\s*/";
 do {
   preg_match_all($regex, $content, $matches);
   foreach ($matches[0] as $index => $match) {
@@ -174,19 +163,25 @@ do {
 $definitionContent .= "\n\n";
 
 
-// Repeatedly remove functions in the middle of a multi-variable declaration.
-$definitionContent .= "//New function (found in middle of multi-variable declaration).\n";
-$regex = "/,\\n\\t(${regexVariable}\s*=\s*${regexAnonymousFunction})/";
+// Repeatedly remove empty variables (in the middle)
+$definitionContent .= "//Empty variables.\n";
+$regex = "/,\n\t({$regexVariable})\s*,\s*/";
 do {
   preg_match_all($regex, $content, $matches);
   foreach ($matches[0] as $index => $match) {
     $definition = $matches[1][$index];
     $definitionContent .= "var ${definition};\n";
   }
-  $content = preg_replace($regex, "", $content);
+  $content = preg_replace($regex, ",\n\t", $content);
 } while (isset($matches[0]) && count($matches[0]) > 0);
 $definitionContent .= "\n\n";
 
+
+// Regex replacments (after beautify)
+$replacements = [
+  [",\n\t([\$A-Za-z_0-9]+(?:\s*=\s*|;))", ";\nvar \$1"],
+];
+$content = replaceManyByRegex($replacements, $content);
 
 
 function separateDefinitionFromContent($regex, $content, $onMatch) {
@@ -210,7 +205,7 @@ function separateDefinitionFromContent($regex, $content, $onMatch) {
 
 // New functions (that may begin with var)
 $definitionContent .= "//New function.\n";
-$regex = "/\\n(?:var\s+)?(${regexVariable}\s*=\s*${regexAnonymousFunction});/";
+$regex = "/\\n(?:var\s+)?({$regexVariable}\s*=\s*{$regexAnonymousFunction});/";
 separateDefinitionFromContent($regex, $content, function($definition) {
   return "var ${definition};\n";
 });
@@ -219,7 +214,7 @@ $definitionContent .= "\n\n";
 
 // New function in the underscore object
 $definitionContent .= "//New function in underscore.\n";
-$regex = "/\\n_\.(${regexVariable}\s*=\s*${regexAnonymousFunction});/";
+$regex = "/\\n_\.({$regexVariable}\s*=\s*{$regexAnonymousFunction});/";
 separateDefinitionFromContent($regex, $content, function($definition) {
   return "_.${definition};\n";
 });
@@ -227,31 +222,28 @@ $definitionContent .= "\n\n";
 
 // Empty variable declaration
 $definitionContent .= "//Empty variable declarations.\n";
-$regex = "/\\n(var\s+${regexVariable});/";
+$regex = "/\\n(var\s+{$regexVariable});/";
 separateDefinitionFromContent($regex, $content, function($definition) {
   return "${definition};\n";
 });
 $definitionContent .= "\n\n";
 
 
-// Repeatedly remove strings at the beginning of a multi-variable declaration.
-$definitionContent .= "//New strings (found at start of multi-variable declaration).\n";
-$regex = "/\\n(?:var\s+)(${regexVariable}\s*=\s*${regexString}),(\\n|\\t)*/";
+// Repeatedly remove constants
+$definitionContent .= "//New constants.\n";
+$regex = "/\\n(?:var\s+)({$regexVariable}\s*=\s*(?:{$regexString}|false|true|{$regexNumber}|{$regexRegex}|\{\}));/";
 do {
   preg_match_all($regex, $content, $matches);
   foreach ($matches[0] as $index => $match) {
     $definition = $matches[1][$index];
     $definitionContent .= "var ${definition};\n";
   }
-  $content = preg_replace($regex, "\nvar ", $content);
+  $content = preg_replace($regex, "", $content);
 } while (isset($matches[0]) && count($matches[0]) > 0);
 $definitionContent .= "\n\n";
 
 
-
-$functionsToRemove = [
-  "_\.z",
-  "_\.(Rda|Jd)",
+$functionsToClear = [
   "Iba[A-Za-z\.]*",
 
   "[CH-Ji-joq]zc",
@@ -276,20 +268,34 @@ $functionsToRemove = [
 
   ".[LW]a",
   "[a-gijlx-z]1a",
+];
+$functionsToRemove = [
+  "_\.z",
+  "_\.(Rda|Jd)",
 
+  "oc\.prototype\.(V)",
   "qM\.prototype\.(ka)",
   "(.f)\.prototype\.[\$a-zA-z]+",
   "(?:_\.)?([m]c|[\$flnpwxLV-Z]e|[deghjm-su-wyzA]f|.s|[f-hklA]t|[Q-V]G|nM|gea|[sGJN]da|[foCH]zc|Wyc|.[bf-hMR]a|[o-u]Hb)\.prototype\.([\$a-zA-z]+)",
-	"_\.Sda",
+	"_\.(?:LXa|Sda)",
 
+  "_\.gr",
 ];
 // Regex replacments (after beautify)
 $replacements = [
   // Emptying functions
-  ["var\s+(" . implode("|", $functionsToRemove) . ")\s*=\s*{$regexAnonymousFunction};", "if (!\$1) var \$1 = function () {};"],
+  ["var\s+(" . implode("|", $functionsToClear) . ")\s*=\s*{$regexAnonymousFunction};", "if (!\$1) var \$1 = function () {};"],
+  ["\\n(" . implode("|", $functionsToClear) . ")\s*=\s*{$regexAnonymousFunction};", ""],
+  ["var\s+(" . implode("|", $functionsToRemove) . ")\s*=\s*{$regexAnonymousFunction};", ""],
   ["\\n(" . implode("|", $functionsToRemove) . ")\s*=\s*{$regexAnonymousFunction};", ""],
 
 	//["\s+\(0,\s*([A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)*)\)\(", " \$2("], // TODO: not working
+
+  // Removes the if block at line 51.
+  ["if \(\"undefined\" == typeof window.globals \|\| !_\.Tb\(window\.globals\.ErrorHandler\)\)${regexCodeBlock};", ""],
+
+  ["\s*=\s*\"(\.|\/|#|@)[^\"]+\";", " = \"\";"], // Clearing all strings that begin with ./#@
+  ["\s*=\s*'(\.|\/|#|@)[^']+';", " = '';"], // Clearing all strings that begin with ./#@
 ];
 $definitionContent = replaceManyByRegex($replacements, $definitionContent);
 $content = replaceManyByRegex($replacements, $content);
