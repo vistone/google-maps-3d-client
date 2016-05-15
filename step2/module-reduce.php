@@ -7,6 +7,7 @@ $replacements = [
   ["content:\"\";",   ""],
   ["content:'';",   ""],
 ];
+$definitionContent = replaceManyByBasic($replacements, $definitionContent);
 $content = replaceManyByBasic($replacements, $content);
 
 
@@ -45,15 +46,15 @@ $properties = [
   '-webkit(-[A-z]+)+',
 ];
 
-$regex = '/(min|max)?(' . implode('|', $properties) . "){$c(R_CSS_COLON)}[^;\"\{\}]+;/";
-$content = preg_replace($regex, '', $content);
-
-$regex = '/(min|max)?(' . implode('|', $properties) . "){$c(R_CSS_COLON)}[^;\"\{\}]+\}/";
-$content = preg_replace($regex, '}', $content);
-
 
 // Regex replacments (before beautify)
 $replacements = [
+
+  // More CSS
+  ['(min|max)?(' . implode('|', $properties) . "){$c(R_CSS_COLON)}[^;\"\{\}]+;", ""],
+  ['(min|max)?(' . implode('|', $properties) . "){$c(R_CSS_COLON)}[^;\"\{\}]+\}", "}"],
+
+
   ["(background|display|border(-(top|left|right|bottom))?)(-[a-z]+)?{$c(R_CSS_COLON)}[^;\"\{\}]+;", ""],
   ["((top|left|right|bottom|width|height|z-index|margin|padding):{$c(R_CSS_VALUE)};)", ""],
   ["((top|left|right|bottom|width|height|z-index|margin|padding):{$c(R_CSS_VALUE)}\}\")", "}\""],
@@ -62,6 +63,7 @@ $replacements = [
   ["#[A-Fa-f0-9]{6}", ""],
 	//["\"[a-z]+[A-Z][a-z]+\"", "\"\""],
 
+
   ["\"{$c(R_CSS_MANY_SELECTORS)}\{\}", "\""],
   ["'{$c(R_CSS_MANY_SELECTORS)}\{\}", "'"],
   ["background(-image)?:url\(\"[^;\"\{\}]+\"\)[^;\"\{\}]*;", ""],
@@ -69,18 +71,22 @@ $replacements = [
   ["\"[-.,:+a-z\s()]+\{\}\"", "\"\""], // All empty CSS selectors
   ["'[-.,:+a-z\s()]+\{\}'", "''"], // All empty CSS selectors
 
+
   ["_\.[A-z]+\(\"about:blank\"\);", ""],
   ["_\.[A-z]+\(\"<!DOCTYPE html>\", 0\);", ""],
   ["_\.C\s*\([^()]*\);\n?", ""], // Removing all calls to _.C()
   ["_\.A\s*\(\"[^()\"]+\"\);\n?", ""], // Removing all calls to _.A(string)
   ["_\.z\s*\([^()]*\);\n?", ""], // Removing all calls to _.C()
 
+
   ["\s*\<\/?([A-Za-z]+)\>\s*", ""], // Any XML tag. For example, <hr> <h1> </h1> </someTHINGcrazy>
+
 
   ["\s*=\s*\"(\.|\/|#|@)[^\"]+\";", " = \"\";"], // Clearing all strings that begin with ./#@
   ["\s*=\s*'(\.|\/|#|@)[^']+';", " = '';"], // Clearing all strings that begin with ./#@
 
 ];
+$definitionContent = replaceManyByRegex($replacements, $definitionContent);
 $content = replaceManyByRegex($replacements, $content);
 
 
@@ -89,9 +95,11 @@ $functionsToClear = [
   "Iba[A-Za-z\.]*",
 
   "[CH-Ji-joq]zc",
+  "oc",
   "nM",
+  "[fpvABIW]ca",
 
-  "[JMRUn]ba",
+  "[nyBG-KMP-U]ba",
   "[KJPQTX]da",
 	"[moq]Ea",
 	"[abe-il-puw-zA-COP]Xa",
@@ -118,10 +126,12 @@ $functionsToRemove = [
   "oc\.prototype\.(V)",
   "qM\.prototype\.(ka)",
   "(.f)\.prototype\.[\$a-zA-z]+",
-  "(?:_\.)?([m]c|[\$flnpwxLV-Z]e|[deghjm-su-wyzA]f|.s|[f-hklA]t|[Q-V]G|nM|gea|[sGJN]da|[foCH]zc|Wyc|.[bf-hMR]a|[o-u]Hb)\.prototype\.([\$a-zA-z]+)",
+  "(?:_\.)?([m]c|[\$flnpwxLV-Z]e|[deghjm-su-wyzA]f|.s|[f-hklA]t|[Q-V]G|nM|gea|[sGJN]da|[foCH]zc|Wyc|.[bf-hLMR]a|[o-u]Hb)\.prototype\.([\$a-zA-z]+)",
 	"_\.(?:LXa|Sda)",
 
-  "_\.gr",
+
+  "_\.[JOQR]r",
+  "_\.uLa",
 ];
 // Regex replacments (after beautify)
 $replacements = [
@@ -138,6 +148,8 @@ $replacements = [
 
   ["\s*=\s*\"(\.|\/|#|@)[^\"]+\";", " = \"\";"], // Clearing all strings that begin with ./#@
   ["\s*=\s*'(\.|\/|#|@)[^']+';", " = '';"], // Clearing all strings that begin with ./#@
+
+  ["if\s*\(_\.uG\(\)\)${regexCodeBlock};", ""],
 ];
 $definitionContent = replaceManyByRegex($replacements, $definitionContent);
 $content = replaceManyByRegex($replacements, $content);
