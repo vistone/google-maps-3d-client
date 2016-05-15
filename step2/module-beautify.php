@@ -67,6 +67,13 @@ $definitionContent .= "\n\n";
 // Regex replacments (after beautify)
 $replacements = [
   [",\n\t([\$A-Za-z_0-9]+(?:\s*=\s*|;))", ";\nvar \$1"],
+
+  // Simplifying (0, someFunction)(variables) to someFunction(variables)
+  ["\(\s*0\s*,\s*({$regexVariable}(?:\.{$regexVariable})*)\s*\)\s*\(\s*", "\$1("],
+
+  // Changing multi-variable assignments to single-variable assignments.
+  ["\n\t{1}var\s+([^,;{}]+),\n\t\t{1}", "\n\tvar \$1;\n\tvar "],
+  ["\n\t{2}var\s+([^,;{}]+),\n\t\t{2}", "\n\t\tvar \$1;\n\t\tvar "],
 ];
 $content = replaceManyByRegex($replacements, $content);
 
@@ -128,6 +135,30 @@ do {
   $content = preg_replace($regex, "", $content);
 } while (isset($matches[0]) && count($matches[0]) > 0);
 $definitionContent .= "\n\n";
+
+
+// Repeatedly change multi-variable assignments to single-variable assignments.
+$replacements = [
+  ["/\n\t{1}var\s+([^,;{}]+),\n\t\t{1}/", "\n\tvar \$1;\n\tvar "],
+  ["/\n\t{2}var\s+([^,;{}]+),\n\t\t{2}/", "\n\t\tvar \$1;\n\t\tvar "],
+  ["/\n\t{3}var\s+([^,;{}]+),\n\t\t{3}/", "\n\t\t\tvar \$1;\n\t\tvar "],
+  ["/\n\t{4}var\s+([^,;{}]+),\n\t\t{4}/", "\n\t\t\tvar \$1;\n\t\tvar "],
+  ["/\n\t{5}var\s+([^,;{}]+),\n\t\t{5}/", "\n\t\t\tvar \$1;\n\t\tvar "],
+];
+foreach ($replacements as $item) {
+  $regex = $item[0];
+  $replacement = $item[1];
+
+  do {
+    preg_match_all($regex, $content, $matches);
+    $count = isset($matches[0]) && count($matches[0]) > 0 ? 1 : 0;
+    $content = preg_replace($regex, $replacement, $content);
+
+    preg_match_all($regex, $definitionContent, $matches);
+    $count += isset($matches[0]) && count($matches[0]) > 0 ? 1 : 0;
+    $definitionContent = preg_replace($regex, $replacement, $definitionContent);
+  } while ($count > 0);
+};
 
 
 // Move strings
