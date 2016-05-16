@@ -30,6 +30,36 @@ function get_last_preg_error() {
   return array_flip(get_defined_constants(true)['pcre'])[preg_last_error()];
 }
 
+function simplifyMultiVariableAssignments() {
+  global $content;
+  global $definitionContent;
+
+  // Repeatedly change multi-variable assignments to single-variable assignments.
+  $replacements = [
+    ["/\n\t{1}var\s+([^,;{}]+),\n\t\t{1}/", "\n\tvar \$1;\n\tvar "],
+    ["/\n\t{2}var\s+([^,;{}]+),\n\t\t{2}/", "\n\t\tvar \$1;\n\t\tvar "],
+    ["/\n\t{3}var\s+([^,;{}]+),\n\t\t{3}/", "\n\t\t\tvar \$1;\n\t\t\tvar "],
+    ["/\n\t{4}var\s+([^,;{}]+),\n\t\t{4}/", "\n\t\t\t\tvar \$1;\n\t\t\t\tvar "],
+    ["/\n\t{5}var\s+([^,;{}]+),\n\t\t{5}/", "\n\t\t\t\t\tvar \$1;\n\t\t\t\t\tvar "],
+  ];
+  foreach ($replacements as $item) {
+    $regex = $item[0];
+    $replacement = $item[1];
+
+    do {
+      $matches = [];
+      preg_match_all($regex, $content, $matches);
+      $count = isset($matches[0]) && count($matches[0]) > 0 ? 1 : 0;
+      $content = preg_replace($regex, $replacement, $content);
+
+      $matches = [];
+      preg_match_all($regex, $definitionContent, $matches);
+      $count += isset($matches[0]) && count($matches[0]) > 0 ? 1 : 0;
+      $definitionContent = preg_replace($regex, $replacement, $definitionContent);
+    } while ($count > 0);
+  };
+}
+
 function replaceManyByBasic($replacements, $content) {
   foreach ($replacements as $replacement) {
     $search = $replacement[0];

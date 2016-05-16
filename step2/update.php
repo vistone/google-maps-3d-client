@@ -43,6 +43,13 @@ $definitionContent = '';
 
 require 'module-beautify.php';
 
+if (!is_dir('tmp')) {
+  mkdir('tmp');
+}
+if (!is_dir('res')) {
+  mkdir('res');
+}
+
 file_put_contents('tmp/1-after-beautify-definitons.js', $definitionContent);
 file_put_contents('tmp/1-after-beautify.js', $content);
 
