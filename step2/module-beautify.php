@@ -164,14 +164,58 @@ if (AUTOMATIC_REPLACE_ENABLED) {
   }
   foreach ($strings as $replacement) {
     $regex = '/([^A-z0-9])(' . preg_quote($replacement[0]) . ')([^=A-z0-9-])/';
-    $substitute = '$1"' . preg_quote($replacement[1]) . '"$3';
+    $substitute = '$1"' . $replacement[1] . '"$3';
 
-    $matches = [];
     $content = preg_replace($regex, $substitute, $content);
     if ($content === null) {
-			echo "Error!\n";
+      echo "Error!\n";
       print(get_last_preg_error());
       exit;
     }
   }
 }
+
+// Remove filler functions for older browsers.
+$regex = "/\\n({$regexVariable}(?:\.{$regexVariable})*)\s*=\s*({$regexVariable}\.prototype\.{$regexVariable})\s*\?\s*{$regexAnonymousFunction}\s*:\s*{$regexAnonymousFunction}\s*;/";
+$items = [];
+$matches = [];
+$count = preg_match_all($regex, $content, $matches);
+if ($count === false) {
+  print("Error! Invalid regex!");
+  exit;
+}
+for ($i = 0; $i < $count; $i++) {
+  $variableName = $matches[1][$i];
+  $testValue  = $matches[2][$i];
+  $items[] = [$variableName, $testValue];
+}
+
+$content = preg_replace($regex, '', $content);
+if ($content === null) {
+  echo "Error!\n";
+  print(get_last_preg_error());
+  exit;
+}
+foreach ($items as $item) {
+  $item[0] = str_replace('.prototype', '', $item[0]);
+  $regex = '/([^A-z0-9\n])(' . preg_quote($item[0]) . ')([^=A-z0-9-])/';
+  $substitute = '$1' . $item[1] . '.call$3';
+
+  $matches = [];
+  preg_match_all($regex, $content, $matches);
+
+  $content = preg_replace($regex, $substitute, $content);
+  if ($content === null) {
+    echo "Error!\n";
+    print(get_last_preg_error());
+    exit;
+  }
+
+  $definitionContent = preg_replace($regex, $substitute, $definitionContent);
+  if ($definitionContent === null) {
+    echo "Error!\n";
+    print(get_last_preg_error());
+    exit;
+  }
+}
+print_r($items);

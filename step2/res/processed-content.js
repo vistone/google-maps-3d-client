@@ -13,19 +13,7 @@ function () {
 _.w(_.ic, Error);
 _.ic.prototype.name = "CustomError";
 
-_.jc = String.prototype.trim ?
-function (a) {
-	return a.trim()
-} : function (a) {
-	return a.replace(/^[\s\xa0]+|[\s\xa0]+$/g, _.e)
-};
 
-_.Aba = String.prototype.repeat ?
-function (a, b) {
-	return a.repeat(b)
-} : function (a, b) {
-	return Array(b + 1).join(a)
-};
 
 
 _.Cba = 2147483648 * Math.random() | 0;
@@ -55,73 +43,6 @@ oc.prototype.Aa = function () {
 };
 
 
-_.rc = Array.prototype.indexOf ?
-function (a, b, c) {
-	return Array.prototype.indexOf.call(a, b, c)
-} : function (a, b, c) {
-	c = null == c ? 0 : 0 > c ? Math.max(0, a.length + c) : c;
-	if (_.ac(a)) return _.ac(b) && 1 == b.length ? a.indexOf(b, c) : -1;
-	for (; c < a.length; c++) if (c in a && a[c] === b) return c;
-	return -1
-};
-_.aca = Array.prototype.lastIndexOf ?
-function (a, b, c) {
-	return Array.prototype.lastIndexOf.call(a, b, null == c ? a.length - 1 : c)
-} : function (a, b, c) {
-	c = null == c ? a.length - 1 : c;
-	0 > c && (c = Math.max(0, a.length + c));
-	if (_.ac(a)) return _.ac(b) && 1 == b.length ? a.lastIndexOf(b, c) : -1;
-	for (; 0 <= c; c--) if (c in a && a[c] === b) return c;
-	return -1
-};
-_.sc = Array.prototype.forEach ?
-function (a, b, c) {
-	Array.prototype.forEach.call(a, b, c)
-} : function (a, b, c) {
-	for (var d = a.length, f = _.ac(a) ? a.split(_.e) : a, g = 0; g < d; g++) g in f && b.call(c, f[g], g, a)
-};
-_.tc = Array.prototype.filter ?
-function (a, b, c) {
-	return Array.prototype.filter.call(a, b, c)
-} : function (a, b, c) {
-	for (var d = a.length, f = [], g = 0, h = _.ac(a) ? a.split(_.e) : a, l = 0; l < d; l++) if (l in h) {
-		var n = h[l];
-		b.call(c, n, l, a) && (f[g++] = n)
-	}
-	return f
-};
-_.uc = Array.prototype.map ?
-function (a, b, c) {
-	return Array.prototype.map.call(a, b, c)
-} : function (a, b, c) {
-	for (var d = a.length, f = Array(d), g = _.ac(a) ? a.split(_.e) : a, h = 0; h < d; h++) h in g && (f[h] = b.call(c, g[h], h, a));
-	return f
-};
-_.bca = Array.prototype.reduce ?
-function (a, b, c, d) {
-	d && (b = _.v(b, d));
-	return Array.prototype.reduce.call(a, b, c)
-} : function (a, b, c, d) {
-	var f = c;
-	_.sc(a, function (c, h) {
-		f = b.call(d, f, c, h, a)
-	});
-	return f
-};
-_.vc = Array.prototype.some ?
-function (a, b, c) {
-	return Array.prototype.some.call(a, b, c)
-} : function (a, b, c) {
-	for (var d = a.length, f = _.ac(a) ? a.split(_.e) : a, g = 0; g < d; g++) if (g in f && b.call(c, f[g], g, a)) return true;
-	return false
-};
-_.cca = Array.prototype.every ?
-function (a, b, c) {
-	return Array.prototype.every.call(a, b, c)
-} : function (a, b, c) {
-	for (var d = a.length, f = _.ac(a) ? a.split(_.e) : a, g = 0; g < d; g++) if (g in f && !b.call(c, f[g], g, a)) return false;
-	return true
-};
 eca.prototype.get = function () {
 	var a;
 	0 < this.R ? (this.R--, a = this.H, this.H = a.next, a.next = null) : a = this.S();
@@ -509,7 +430,7 @@ _.rd.prototype.load = function (a, b) {
 _.rd.prototype.Wa = function (a, b, c) {
 	this.ka++;
 	this.S = a;
-	_.sc(b, _.fc(_.zc, this.W), this);
+	Array.prototype.forEach.call(b, _.fc(_.zc, this.W), this);
 	401 == c ? (Oda(this, 0), this.R.length = 0) : 410 == c ? (Xda(this, 3), Wda(this)) : 3 <= this.ka ? (Xda(this, 1), Wda(this)) : this.Ja(this.S, true, 8001 == c)
 };
 _.rd.prototype.Va = function () {
@@ -6184,6 +6105,15 @@ _.jca(function (a) {
 
 
 
+_.SLa.prototype.ta = function (a) {
+	_.D(this.H, a ? a.ha() : null)
+};
+_.SLa.prototype.Ca = function (a) {
+	return _.G(this.H, a ? a.H : null)
+};
+_.SLa.prototype.ha = function () {
+	return this.H
+};
 
 _.r = _.TLa.prototype;
 _.r.ta = function (a) {
@@ -6243,6 +6173,15 @@ _.r.pL = function (a) {
 };
 _.r.MK = function (a) {
 	this.H[1] = a
+};
+XLa.prototype.ta = function (a) {
+	_.D(this.H, a ? a.ha() : null)
+};
+XLa.prototype.Ca = function (a) {
+	return _.G(this.H, a ? a.H : null)
+};
+XLa.prototype.ha = function () {
+	return this.H
 };
 var gMa = new cMa;
 var hMa = new eMa;
@@ -8435,7 +8374,7 @@ _.su.prototype.getExtension = function (a) {
 		this.H || (this.H = {});
 		var b = a.S;
 		if (a.V) {
-			if (a.R()) return this.H[b] || (this.H[b] = _.uc(this.S[b] || [], function (b) {
+			if (a.R()) return this.H[b] || (this.H[b] = Array.prototype.map.call(this.S[b] || [], function (b) {
 				return new a.H(b)
 			})), this.H[b]
 		} else if (a.R()) return !this.H[b] && this.S[b] && (this.H[b] = new a.H(this.S[b])), this.H[b];
@@ -10732,12 +10671,12 @@ for (var Tlb = 0, jD = {
 			var b = [];
 			a = a.split(Elb);
 			for (var c = 0, d = a ? a.length : 0; c < d; ++c) {
-				var f = _.jc(a[c]);
+				var f = String.prototype.trim.call(a[c]);
 				if (f) {
 					var g = f.indexOf(_.xa);
 					if (-1 != g) {
-						var h = _.jc(f.substring(0, g)),
-							f = _.jc(f.substring(g + 1)),
+						var h = String.prototype.trim.call(f.substring(0, g)),
+							f = String.prototype.trim.call(f.substring(g + 1)),
 							g = f.indexOf(_.k); - 1 != g && (f = f.substring(g + 1));
 						b.push([hD(h), f])
 					}
@@ -10756,9 +10695,9 @@ for (var Tlb = 0, jD = {
 					if (cD.test(a.slice(c, d).join(_.e))) break;
 					g = c - 1
 				} else for (var h = c; h < g;) {
-					var l = _.rc(a, _.oa, h);
+					var l = Array.prototype.indexOf.call(a, _.oa, h);
 					if (-1 == l || l > g) l = g;
-					f.push(hD(_.jc(a.slice(h, l).join(_.e))));
+					f.push(hD(String.prototype.trim.call(a.slice(h, l).join(_.e))));
 					h = l + 1
 				}
 				0 == f.length && f.push(hD(bgb));
@@ -10785,7 +10724,7 @@ for (var Tlb = 0, jD = {
 				var f = Olb(a, c);
 				if (-1 == f) break;
 				var g = eD(a, f + 1),
-					c = _.jc(a.slice(c, f).join(_.e)),
+					c = String.prototype.trim.call(a.slice(c, f).join(_.e)),
 					f = fD(a.slice(f + 1, g), c);
 				b.push(f);
 				c = g + 1
@@ -10816,7 +10755,7 @@ for (var Tlb = 0, jD = {
 				var f = Olb(a, c);
 				if (-1 == f) break;
 				var g = eD(a, f + 1),
-					c = _.jc(a.slice(c, f).join(_.e)),
+					c = String.prototype.trim.call(a.slice(c, f).join(_.e)),
 					f = fD(a.slice(f + 1, g), c);
 				b.push([c, f]);
 				c = g + 1
@@ -10830,7 +10769,7 @@ for (var Tlb = 0, jD = {
 				var f = Olb(a, c);
 				if (-1 == f) break;
 				var g = eD(a, f + 1),
-					c = _.jc(a.slice(c, f).join(_.e)),
+					c = String.prototype.trim.call(a.slice(c, f).join(_.e)),
 					f = fD(a.slice(f + 1, g), c);
 				b.push([c, hD(c), f]);
 				c = g + 1
@@ -10854,8 +10793,8 @@ for (var Tlb = 0, jD = {
 			var b = a.indexOf(_.xa);
 			var c = null;
 			if (-1 != b) {
-				var d = _.jc(a.substr(0, b));
-				Glb.test(d) && (c = d == lib ? 1 : d == Mib ? 2 : d == Qib ? 7 : null, a = _.jc(a.substr(b + 1)))
+				var d = String.prototype.trim.call(a.substr(0, b));
+				Glb.test(d) && (c = d == lib ? 1 : d == Mib ? 2 : d == Qib ? 7 : null, a = String.prototype.trim.call(a.substr(b + 1)))
 			}
 			return [c, false, gD(a)]
 		},
@@ -10891,40 +10830,6 @@ var Dmb = [];
 var Smb = new tkb(_.ub);
 
 
-pD.prototype.Va = function (a, b, c, d, f) {
-	rD(this, a.ud, a);
-	c = a.R;
-	if (f) if (null != this.H) {
-		c = a.R;
-		f = a.context;
-		for (var g = a.T[4], h = -1, l = 0; l < g.length; ++l) {
-			var n = g[l][3];
-			if (n[0] == $fb) {
-				if (NC(f, n[1], null) === d) {
-					h = l;
-					break
-				}
-			} else n[0] == agb && (h = l)
-		}
-		b.H = h;
-		for (l = 0; l < g.length; ++l) b = g[l], b = c[l] = new oD(b[3], b, new nD(null), f, a.S), this.S && (b.ud.T = true), l == h ? tD(this, b) : a.T[2] && Mmb(this, b);
-		vD(this, a.ud, a)
-	} else {
-		f = a.context;
-		l = a.ud.element;
-		h = [];
-		g = -1;
-		for (l = _.rna(l); l; l = _.mj(l)) n = uD(this, l, a.S), n[0] == $fb ? (h.push(l), NC(f, n[1], l) === d && (g = h.length - 1)) : n[0] == agb && (h.push(l), -1 == g && (g = h.length - 1)), l = mlb(l);
-		d = 0;
-		for (n = h.length; d < n; ++d) {
-			var q = d == g;
-			var l = c[d];
-			q || null == l || Umb(this, l, true);
-			for (var l = h[d], u = mlb(l), x = true; x; l = l.nextSibling) _.yj(l, q), l == u && (x = false)
-		}
-		b.H = g; - 1 != g && (b = c[g], null == b ? (b = h[g], l = c[g] = new oD(uD(this, b, a.S), null, new nD(b), f, a.S), Jmb(this, l)) : sD(this, b))
-	} else - 1 != b.H && (g = b.H, sD(this, c[g]))
-};
 
 
 Wmb.prototype.Ta = function () {
@@ -12850,7 +12755,7 @@ _.r.contains = function (a) {
 _.r.remove = function (a) {
 	var b;
 	b = this.H;
-	var c = _.aca(b, a);
+	var c = Array.prototype.lastIndexOf.call(b, a);
 	0 <= c ? (_.yc(b, c), b = true) : b = false;
 	return b || _.zc(this.R, a)
 };
@@ -14164,8 +14069,8 @@ eM.prototype.W = function (a, b, c) {
 	f = dyc(f);
 	c = a.Os(b).Os(f);
 	a = b.Os(a).Os(f);
-	_.sc(c.Df(), this.wa, this);
-	_.sc(a.Df(), this.va, this)
+	Array.prototype.forEach.call(c.Df(), this.wa, this);
+	Array.prototype.forEach.call(a.Df(), this.va, this)
 };
 eM.prototype.va = function (a) {
 	a == _.bb && this.$ || _.XE(this, this.ka, a, this.V, true, this)

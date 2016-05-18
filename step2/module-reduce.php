@@ -93,19 +93,13 @@ $content = replaceManyByRegex($replacements, $content);
 
 $functionsToClear = [
   "Iba[A-Za-z\.]*",
-
-  "[CH-Ji-joq]zc",
-  "oc",
-  "nM",
-  "[fpvABIW]ca",
-
-  "[nyBG-KMP-U]ba",
   "[KJPQTX]da",
 	"[moq]Ea",
-	"[abe-il-puw-zA-COP]Xa",
-  "[fgjkMO]ea",
+	"[be-il-puw-zA-COP]Xa",
+  "[gjkMO]ea",
   "[a-xzA-Z]Ea",
 	"[yABF]ka",
+
 	"[nCK]la",
   "wpa",
   "hnb",
@@ -115,23 +109,41 @@ $functionsToClear = [
   "[\$gij-ps-yBCFH-LY]wc",
   "[glrv]xc",
   "[cegptT]zc",
-
   ".[LW]a",
   "[a-gijlx-z]1a",
+  "oc",
+  "[fpvABIW]ca",
+
+  "[nyG-KMP-U]ba",
+  //"[B]ba",
+  "DJa",
+
 ];
 $functionsToRemove = [
   "_\.z",
-  "_\.(Rda|Jd)",
-
   "oc\.prototype\.(V)",
   "qM\.prototype\.(ka)",
   "(.f)\.prototype\.[\$a-zA-z]+",
-  "(?:_\.)?([m]c|[\$flnpwxLV-Z]e|[deghjm-su-wyzA]f|.s|[f-hklA]t|[Q-V]G|nM|gea|[sGJN]da|[foCH]zc|Wyc|.[bf-hLMR]a|[o-u]Hb)\.prototype\.([\$a-zA-z]+)",
+  "(?:_\.)?([m]c|[\$flnpwxLV-Z]e|[deghjm-su-wyzA]f|.s|[f-hklA]t|[Q-V]G|nM|gea|[sGJN]da|[foCH]zc|Wyc|.[bf-hMR]a|[o-u]Hb)\.prototype\.([\$a-zA-z]+)",
 	"_\.(?:LXa|Sda)",
-
-
   "_\.[JOQR]r",
   "_\.uLa",
+
+  "_\.(Jd)",
+  //"_\.(Rda)",
+	"[K]Ja",
+	"[a]Xa",
+  "[f]ea",
+
+  "(?:_\.)?[jr-xz]j",
+  "(?:_\.)?[vIL]na",
+  "(?:_\.)?[t-v]Ac",
+  "[fg]nb",
+  "pD\.prototype\.Va",
+  "(?:_\.)?ila",
+  "(?:_\.)?Ejb",
+  "[de]Ac",
+
 ];
 // Regex replacments (after beautify)
 $replacements = [
