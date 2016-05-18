@@ -102,7 +102,8 @@ $functionsToClear = [
 
 	"[nCK]la",
   "wpa",
-  "hnb",
+  "[deh]nb",
+  "Nmb",
   "[\$adhpvF-HZ]0a",
   ".Ob",
   ".[vyz]a",
@@ -142,7 +143,18 @@ $functionsToRemove = [
   "pD\.prototype\.Va",
   "(?:_\.)?ila",
   "(?:_\.)?Ejb",
-  "[de]Ac",
+  "[c-eik]Ac",
+
+  "_\.Z",
+  "flb",
+  "[abk]nb",
+  "yca",
+  "[\$x]mb",
+  "trc",
+  "_\.Ejb",
+  "_\.xD\.prototype\.nb",
+  "_\.AD",
+  "_\.r\.we",
 
 ];
 // Regex replacments (after beautify)

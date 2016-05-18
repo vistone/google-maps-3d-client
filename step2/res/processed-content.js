@@ -11351,55 +11351,6 @@ _.xD.prototype.Ve = function (a) {
 	a = _.Ni == vkb(this.H);
 	this.R.H.Ab = a
 };
-_.xD.prototype.nb = function (a, b, c) {
-	if (this.S && this.H) {
-		var d = this.R;
-		var f = this.H;
-		var g = this.S;
-		var h = this.T;
-		knb();
-		if (0 == (b & 2)) for (var l = g.$, n = l.length - 1; 0 <= n; --n) {
-			var q = l[n];
-			Fmb(f, h, q.H.ud.element, q.H.S) && l.splice(n, 1)
-		}
-		l = _.Ni == vkb(f);
-		d.H.Ab = l;
-		d.H.Sa = true;
-		d.H.dc = true;
-		q = null;
-		(n = f.__cdn) && n.H != ymb && h != Cib && (l = Bmb(n, h, null)) && (n = l, q = Nib, l = new pD(g, b, c), n.context.ta(d), n.ud.H && !n.wa && f == n.ud.element && n.ud.H.reset(h), sD(l, n));
-		if (null == q) {
-			l = new pD(g, b, c);
-			b = uD(l, f, null);
-			g = b[0] == _.O ? 1 : 0;
-			c = 0;
-			if (h != Cib && h != f.getAttribute(_.qu)) {
-				var u = false;
-				var n = b.length - 2;
-				if (b[0] == _.O && b[1] == h) c = 0, u = true;
-				else if (b[n] == _.Oz && b[n + 1] == h) c = n, u = true;
-				else for (q = hmb(f), n = 0; n < q.length; ++n) if (q[n] == h) {
-					b = bmb(h);
-					g = n + 1;
-					c = 0;
-					u = true;
-					break
-				}
-			}
-			n = new LC;
-			n.ta(d);
-			n = new oD(b, null, new nD(f), n, h);
-			n.V = c;
-			n.W = g;
-			n.ud.R = hmb(f);
-			d = false;
-			u && b[c] == _.O && (Nmb(n.ud, h), h = l.R.H[h], d = null == h || null == h.mC ? false : h.mC != f.getAttribute(rib));
-			d ? $mb(l, null, n) : Jmb(l, n)
-		}
-	}
-	a && a();
-	return this.H
-};
 _.xD.prototype.remove = function () {
 	var a = this.H;
 	if (null != a) {
@@ -14623,15 +14574,6 @@ _.r.Zc = function () {
 };
 _.r.ad = function () {
 	return 97
-};
-_.r.we = function (a) {
-	if (this.S) if (this.Ea) {
-		this.W.fill(this.H);
-		this.W.nb();
-		a = this.S.content;
-		var b = this.H.H[0];
-		null != b && b && _.dc(a) && 0 < a.nodeType && (this.V || (this.V = _.nh(Hvc, this.Aa)), this.V && (_.ph(this.V), this.V.appendChild(a.cloneNode(true))))
-	} else this.Ea = true, _.AD(this.W, this.Aa), this.W.fill(null), this.W.nb(), this.R(a)
 };
 _.r.open = function (a, b, c, d, f, g) {
 	var h = {};
