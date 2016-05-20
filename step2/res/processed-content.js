@@ -14718,27 +14718,6 @@ qM.prototype.V = function () {
 		this.Ba.length = 0
 	}
 };
-qM.prototype.initialize = function () {
-	_.ys.Bb().ta(new _.ys(window.APP_FLAGS));
-	_.VL.Bb().ta(new _.VL(window.VECTORTOWN_FLAGS));
-	var a = new _.Uq(window.APP_OPTIONS);
-	mAc(a);
-	_.Zq.Bb().ta(a);
-	mxc(_.hfb(a));
-	var b = new _.iH(window.APP_INITIALIZATION_STATE);
-	this.R = new Mzc(b);
-	jAc(this, a);
-	kAc(this, b);
-	var c = this.R.W;
-	var d = this.R.S;
-	nAc(c, _.v(function () {
-		oAc = true;
-		this.R && null != this.T && window.document.body.removeChild(this.T)
-	}, this));
-	_.Eba = _.gr;
-	pAc(d, c);
-	qAc(qwc(a)) || (d = _.F(a.H, 42), 0 < d.length ? Awc = d.join(_.oa) : Awc = null, lAc(wwc(a)), a = _.F(b.H, 8), this.U = new Vzc(a, this.R), a = pwc(), 0 < a ? _.nc(_.v(this.wa, this, c), a) : this.wa(c))
-};
 qM.prototype.wa = function (a) {
 	var b = _.v(function (a, b) {
 		this.$(a, b);

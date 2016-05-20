@@ -81,65 +81,79 @@ var yca = function () {
 	}
 };
 
-var dAc = function () {
-  var items = [,,[,,"$a",[0,,,,"content-container","id",,1],,],["$a",[],"$a",[0,,,,"scene","id"],,],,[,,"$up",["t-rLHcS5b1nEo"]],,,,,,[,,"$a",[0,,,,"app-container","id"]],,,[,,"$a",[0,,,,"lightbox","id"]]];
-  for (var i = 0; i <= 55; i++) {
-    items.push([]);
+var iAc = function (a) {};
+
+_.Fc = function (list, b, c) {
+	for (var d in list) {
+    b.call(c, list[d], d, list)
   }
-  return items;
 };
 
+_.hKb = function (scriptUrl) {
+	var element = window.document.createElement("SCRIPT");
+  var h = new _.pd(function () {}, {});
+	window.setTimeout(function () {
+		h.H(new fKb(1, "Timeout reached for loading script " + scriptUrl))
+	}, 500);
+
+	var attributes = {
+		"type": "text/javascript",
+		"src": scriptUrl
+	};
+  for (var name in attributes) {
+		element.setAttribute(name, attributes[name])
+  }
+	window.document.documentElement.appendChild(element);
+	return h;
+};
+
+_.hla = function (element, attributes) {
+  for (var name in attributes) {
+		element.setAttribute(name, attributes[name])
+  }
+};
+
+var Czc = function () {};
 var eAc = function (a) {
   this.S = a;
   this.R = new LC;
-  this.R.R = this.S.S;
-  this.H = null;
   this.T = "t-ZCACkk-Ca5o";
 
   if (!_.Y(a, "t-ZCACkk-Ca5o")) {
-    _.Z(a, "t-ZCACkk-Ca5o",{},[,,,11,["",[],"",[],"",[],"",[,,,14],"",[,,,2,["",[,,,3,["",[],"",[,,,5]]]]]]],[],dAc());
+    _.Z(a, "t-ZCACkk-Ca5o",{},   [,,,[,,"$a",[0,,,,"app-container","id"]],["",[,,,[,,"$a",[0,,,,"lightbox","id"]]],"",[,,,[,,"$a",[0,,,,"content-container","id",,],,],["",[,,,["$a",[],"$a",[0,,,,"scene","id"],,],["",[,,,[,,"$up",["t-rLHcS5b1nEo"]]]]]]]]],[],   []   );
     if (!_.Y(a, "t-rLHcS5b1nEo")) {
-      _.Z(a, "t-rLHcS5b1nEo", {}, ["div",,,2],[],[,,["$a",[0,,,,"splash-div","id"]]]);
+      _.Z(a, "t-rLHcS5b1nEo", {},    [,0,,["$a",[0,,,,"splash-div","id"]]],[], []);
     }
   }
 };
-var iAc = function (a) {};
 
 var xmb = function (elements, g) {
   if (typeof elements[3] == "number") {
     var tempElement = elements[3];
     elements[3] = g[tempElement];
-    elements.H = tempElement;
-  } else if ("undefined" == typeof elements[3]) {
-    elements[3] = [];
-    elements.H = -1;
-  }
-  if (typeof elements[1] != "number") {
-    elements[1] = 0;
   }
   var tempElement = elements[4];
   if (tempElement && typeof tempElement != "string") {
     for (var d = 0; d < tempElement.length; ++d) {
       if (tempElement[d] && typeof tempElement[d] != "string") {
-	xmb(tempElement[d], g);
+        xmb(tempElement[d], g);
       }
     }
   }
 };
 
 _.Z = function (a, b, c, elements, f, g) {
-  xmb(elements, g);
-  a = a.H;
-  console.log(a);
-  if (!(c instanceof Array)) {
-    g = [];
-    for (var l in c) {
-      g[c[l]] = l;
-    }
+  if (g.length > 0) {
+    console.log(g);
   }
-  a[b] = {
+  xmb(elements, g);
+  g = [];
+  for (var l in c) {
+    g[c[l]] = l;
+  }
+  a.H[b] = {
     elements: elements,
-    m2: f,
+    m2: [],
     Zu: g,
   };
 };
@@ -149,9 +163,6 @@ _.z = function(name) {
 	var b = _.rd.HI;
 
 	var tempA = b.H[name];
-	if (tempA == undefined) {
-		return;
-	}
 	var tempB = _.v(b.La);
 	var c = new tempA.R;
 	c.initialize(tempB());
@@ -192,29 +203,11 @@ _.Sda = function (a, b, c) {
 };
 _.uLa = function (a) {};
 
-var kAc = function (a, b) {
-  var c = new eAc(a.R.H);
-
-  var cT = c.T;
-  if (c.S.document()) {
-    var d = c.S.document().createElement(c.S.H[cT].elements[0]);
-    d.setAttribute(_.$B, cgb + cT + _.ag);
-    cT = d;
-  }
-  c.H = cT;
-  if (window.document.body) {
-    window.document.body.appendChild(cT);
-  }
-
-  c.fill(b);
-  c.nb()
-};
-
 _.AD = function (a, body) {
   var cT = a.T;
   if (a.S.document()) {
     var d = a.S.document().createElement(a.S.H[cT].elements[0]);
-    d.setAttribute(_.$B, cgb + cT + _.ag);
+    d.setAttribute("jsl", "$u " + cT + ";");
     cT = d;
   }
   a.H = cT;
@@ -283,6 +276,29 @@ qD.$s.H = 3;
 qD.$u.Gd = 3;
 qD.$ue.Gd = 3;
 qD.$up.Gd = 3;
+
+qM.prototype.initialize = function () {
+	var a = new _.iH(window.APP_OPTIONS);
+	_.Zq.Bb().ta(a);
+	var b = new _.iH(window.APP_INITIALIZATION_STATE);
+	this.R = new Mzc(b);
+
+  var c = new eAc(this.R.H);
+
+  var d = c.S.document().createElement(c.S.H[c.T].elements[0]);
+  d.setAttribute("jsl", "$u " + c.T + ";");
+  c.H = d;
+  if (window.document.body) {
+    window.document.body.appendChild(d);
+  }
+
+  c.nb();
+
+  window.google = {};
+
+  this.U = new Vzc(b.H[8], this.R);
+  this.wa(this.R.W)
+};
 
 _.xD.prototype.nb = function (a, b, c) {
   var f = this.H;

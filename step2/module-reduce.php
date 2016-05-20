@@ -156,6 +156,12 @@ $functionsToRemove = [
   "_\.AD",
   "_\.r\.we",
 
+  "_\.hla",
+  "_\.[F]c",
+  "Czc",
+  "qM\.prototype\.initialize",
+  "lAc",
+
 ];
 // Regex replacments (after beautify)
 $replacements = [
