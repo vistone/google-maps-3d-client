@@ -91,27 +91,41 @@ _.Fc = function (list, b, c) {
 
 _.hKb = function (scriptUrl) {
 	var element = window.document.createElement("SCRIPT");
-  var h = new _.pd(function () {}, {});
+	var h = new _.pd();
 	window.setTimeout(function () {
-		h.H(new fKb(1, "Timeout reached for loading script " + scriptUrl))
-	}, 500);
-
-	var attributes = {
-		"type": "text/javascript",
-		"src": scriptUrl
-	};
-  for (var name in attributes) {
-		element.setAttribute(name, attributes[name])
-  }
+	  h.W[1][1].call();
+	}, 0); // Was set to 5000.
+	element.setAttribute("type", "text/javascript");
+	element.setAttribute("src", scriptUrl);
 	window.document.documentElement.appendChild(element);
 	return h;
 };
 
-_.hla = function (element, attributes) {
-  for (var name in attributes) {
-		element.setAttribute(name, attributes[name])
-  }
+_.Nqc = function (a, b, c, d, f) {
+	// Appears to control width/height of drawing area inside canvas
+	var g = a.mh;
+
+	Oqc = window.document.createElement("canvas").getContext("2d").webkitBackingStorePixelRatio || 1;
+	var h = c / Oqc;
+
+	var l = Math.max(d * h, 1);
+	var h = Math.max(f * h, 1);
+	g.width = l;
+	g.height = h;
 };
+
+_.pd = function (a, b) {
+	this.W = [];
+};
+_.pd.prototype.cancel = function (a) {
+};
+_.pd.prototype.H = function (a) {
+	Hda(this, false, a)
+};
+_.qd = function (a, b, c, d) {
+	a.W.push([b, c, d]);
+};
+
 
 var Czc = function () {};
 var eAc = function (a) {

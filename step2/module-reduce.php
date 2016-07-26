@@ -126,7 +126,7 @@ $functionsToRemove = [
   "qM\.prototype\.(ka)",
   "(.f)\.prototype\.[\$a-zA-z]+",
   "(?:_\.)?([m]c|[\$flnpwxLV-Z]e|[deghjm-su-wyzA]f|.s|[f-hklA]t|[Q-V]G|nM|gea|[sGJN]da|[foCH]zc|Wyc|.[bf-hMR]a|[o-u]Hb)\.prototype\.([\$a-zA-z]+)",
-	"_\.(?:LXa|Sda)",
+	"_\.(?:LXa|Sda|hKb|Nqc)",
   "_\.[JOQR]r",
   "_\.uLa",
 

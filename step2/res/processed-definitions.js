@@ -20783,38 +20783,6 @@ _.XJb = function (a, b, c, d) {
 	_.UJb(a) && (f.Pb(), f.Pb(), h = true);
 	return h
 };
-_.hKb = function (a, b) {
-	var c = b || {},
-		d = c.document || window.document,
-		f = _.oh(_.Kaa),
-		g = {
-			RW: f,
-			lq: undefined
-		},
-		h = new _.pd(dKb, g),
-		l = null,
-		n = null != c.timeout ? c.timeout : 5E3;
-	0 < n && (l = window.setTimeout(function () {
-		eKb(f, true);
-		h.H(new fKb(1, aKb + a))
-	}, n), g.lq = l);
-	f.onload = f.onreadystatechange = function () {
-		f.readyState && f.readyState != _.cKb && f.readyState != _.eg || (eKb(f, c.N1 || false, l), h.$b(null))
-	};
-	f.onerror = function () {
-		eKb(f, true, l);
-		h.H(new fKb(0, YJb + a))
-	};
-	g = c.attributes || {};
-	_.Ic(g, {
-		type: _.Ib,
-		charset: bKb,
-		src: a
-	});
-	_.hla(f, g);
-	gKb(d).appendChild(f);
-	return h
-};
 _.jKb = function (a) {
 	a = a.H[4];
 	return null != a ? a : _.e
@@ -21140,14 +21108,6 @@ _.LL = function (a, b) {
 };
 _.Bqc = function () {
 	return _.bd && _.ed(17) || _.$c && _.ed(9) || _.Sd && 0 <= _.lc(_.BLb, 31) ? _.KL : _.bd ? _.nma : _.Fi
-};
-_.Nqc = function (a, b, c, d, f) {
-	var g = a.mh;
-	var h = _.NL(b, c),
-		l = Math.max(d * h, 1),
-		h = Math.max(f * h, 1);
-	_.Sd || _.$c ? (l = Math.round(l), h = Math.round(h)) : (l = Math.floor(l), h = Math.floor(h));
-	if (g.width !== l || g.height !== h || a.H !== c) a.S(c), g.width = l, g.height = h, _.Td && 1 == b ? (a = 1 / c, g.style.transformOrigin = _.Ska, g.style.webkitTransformOrigin = _.Ska, g.style.transform = _.Zka + a + _.oa + a + _.ka, g.style.webkitTransform = _.Zka + a + _.oa + a + _.ka) : (g.style.width = d + _.bh, g.style.height = f + _.bh)
 };
 _.NL = function (a, b) {
 	var c;
