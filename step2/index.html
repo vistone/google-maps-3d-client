@@ -14,15 +14,15 @@ var zooms = {
 };
 var places = {
   TopOfTheWorldYorkPA: {
-    lat: -76.728,
-    lon: 39.930,
+    lat: 39.930,
+    lon: -76.728,
     heading: 315,
     tilt: 80,
     height: 150,
   },
   YorkCollege: {
-    lat: -76.7289,
-    lon: 39.9458,
+    lat: 39.9458,
+    lon: -76.7289,
     heading: 5,
     tilt: 30,
     height: zooms.building,
@@ -35,10 +35,10 @@ var heading = place.heading; // North is 0. East is 90.
 var tilt = place.tilt; // Straight down is 0. Looking at horizon is 90.
 var height = place.height; // Distance above ground. Is this meters?
 window.APP_INITIALIZATION_STATE=[
-  [[28.0,lat,lon]],
+  [[28.0,lon,lat]],
   [[["m"]]],
   ,,,
-  [,,[3,[,lat,lon,,height,,20.0,heading,tilt]]],
+  [,,[3,[,lon,lat,,height,,20.0,heading,tilt]]],
   ,,
   [59,60,61,63,66,65]
 ];
