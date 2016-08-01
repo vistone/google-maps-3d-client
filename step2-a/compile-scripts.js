@@ -1,15 +1,11 @@
 /// Node JS file
 
-// http://stackoverflow.com/questions/281264/remove-empty-elements-from-an-array-in-javascript
-Array.prototype.clean = function(deleteValue) {
-  for (var i = 0; i < this.length; i++) {
-    if (this[i] == deleteValue) {         
-      this.splice(i, 1);
-      i--;
-    }
-  }
-  return this;
-};
+/**
+ * This script looks at the Google Maps original scripts, and it processes them in such a way that makes them readable.
+ * Work in progress.
+ * 
+ * You must have the esprima module.
+ */
 
 var esprima = require('esprima');
 var escodegen = require('escodegen');
@@ -40,8 +36,9 @@ var isMembersMatching = function(member, regexes) {
   return isMembersMatching(member.object, new_regexes);
 };
 
-var original_script = fs.readFileSync('res/original.js');
+var original_script = fs.readFileSync('js/original.js');
 
+// These arrays hold the nodes that will be converted into code later.
 var variable_declarations = [];
 var literals = [];
 var misc_50 = [];
@@ -53,8 +50,11 @@ var other_nodes = [];
 
 var syntax = esprima.parse(original_script);
 
+// Iterate through every top-level node in the Google Maps script.
 for (var index = 0; index < syntax.body.length; index++) {
   var node = syntax.body[index];
+
+  // Most of the variables will be moved to the "10-processed-var.js" file.
   if (node.type === 'VariableDeclaration') {
     for (var varIndex = node.declarations.length - 1; varIndex >= 0; varIndex--) {
       var variableDeclarator = node.declarations[varIndex];
@@ -69,24 +69,25 @@ for (var index = 0; index < syntax.body.length; index++) {
         continue;
       }
     }
-    //node.declarations.clean(null);
     if (node.declarations.length === 0) {
       continue;
     }
   }
 
+  // This will try to move the functions without breaking the Google Maps application.
+  // Notice how there's a lot of conditional statements before I push the nodes.
   if (node.type == 'ExpressionStatement') {
     var expression = node.expression;
     if (expression.type == 'AssignmentExpression' && expression.operator === '=') {
 
-      if (expression.left.type == 'Identifier') {
+      if (expression.left.type == 'Identifier') { // something like "bob"
         if (isFullyLiteralExpression(expression.right)) {
           literals.push(node);
           continue;
         }
       }
 
-      if (expression.left.type == 'MemberExpression') {
+      if (expression.left.type == 'MemberExpression') { // something like "bob.test.something"
         var member = expression.left;
 
         if (member.object.type == 'Identifier' && member.property.type == 'Identifier') {
@@ -142,6 +143,32 @@ for (var index = 0; index < syntax.body.length; index++) {
 
   other_nodes.push(node);
 }
+
+// Generate the code from all of these nodes.
+// I did not delete any nodes. Instead, all I did was move them around.
+
+var variable_declarations_code = generateCodeFromArray(variable_declarations);
+var literals_code = generateCodeFromArray(literals);
+var misc_50_code = generateCodeFromArray(misc_50);
+var misc_52_code = generateCodeFromArray(misc_52);
+var misc_54_code = generateCodeFromArray(misc_54);
+var misc_56_code = generateCodeFromArray(misc_56);
+var misc_58_code = generateCodeFromArray(misc_58);
+var other_nodes_code = generateCodeFromArray(other_nodes);
+
+// Save the code to each respective file.
+
+fs.writeFileSync('js/10-processed-var.js', variable_declarations_code);
+fs.writeFileSync('js/20-literals.js', literals_code);
+fs.writeFileSync('js/50-misc.js', misc_50_code);
+fs.writeFileSync('js/52-misc.js', misc_52_code);
+fs.writeFileSync('js/54-misc.js', misc_54_code);
+fs.writeFileSync('js/56-misc.js', misc_56_code);
+fs.writeFileSync('js/58-misc.js', misc_58_code);
+fs.writeFileSync('js/90-other-nodes.js', other_nodes_code);
+
+// End
+
 
 function isFullyLiteralExpression(expression) {
   if (expression === null) {
@@ -215,21 +242,3 @@ function generateCodeFromArray(array) {
   }
   return code;
 }
-
-var variable_declarations_code = generateCodeFromArray(variable_declarations);
-var literals_code = generateCodeFromArray(literals);
-var misc_50_code = generateCodeFromArray(misc_50);
-var misc_52_code = generateCodeFromArray(misc_52);
-var misc_54_code = generateCodeFromArray(misc_54);
-var misc_56_code = generateCodeFromArray(misc_56);
-var misc_58_code = generateCodeFromArray(misc_58);
-var other_nodes_code = generateCodeFromArray(other_nodes);
-
-fs.writeFileSync('js/10-processed-var.js', variable_declarations_code);
-fs.writeFileSync('js/20-literals.js', literals_code);
-fs.writeFileSync('js/50-misc.js', misc_50_code);
-fs.writeFileSync('js/52-misc.js', misc_52_code);
-fs.writeFileSync('js/54-misc.js', misc_54_code);
-fs.writeFileSync('js/56-misc.js', misc_56_code);
-fs.writeFileSync('js/58-misc.js', misc_58_code);
-fs.writeFileSync('js/90-other-nodes.js', other_nodes_code);
